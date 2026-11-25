@@ -1,0 +1,18 @@
+[package]
+name = "jpeg"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+license = "Apache-2.0"
+description = "JPEG (ITU-T T.81) decoder and encoder for whole slide image tiles, bit-exact with libjpeg-turbo 3.2.0. Rust port of the Go library jpeg-go."
+publish = false
+
+[dependencies]
+# The worker pool (see docs/dependencies.md): safe Rust cannot reuse a thread for jobs that
+# borrow short-lived buffers, and rayon's scope can. Default features, as jp2k-rs.
+rayon = "=1.12.0"
+
+# One codegen unit: the kernels and the loops that call them inline across modules. A dependent
+# crate's own profile applies to it, so this is for this package's examples (bench, oracle).
+[profile.release]
+codegen-units = 1

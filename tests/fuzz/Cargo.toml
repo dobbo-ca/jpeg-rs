@@ -1,0 +1,155 @@
+[package]
+name = "jpeg-fuzz"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+jpeg = { path = "../.." }
+
+# Not part of the root package: only this crate may depend on libfuzzer-sys.
+[workspace]
+
+[[bin]]
+name = "decode"
+path = "fuzz_targets/decode.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "decoder_reuse"
+path = "fuzz_targets/decoder_reuse.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "encoder_reuse"
+path = "fuzz_targets/encoder_reuse.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "decode_config"
+path = "fuzz_targets/decode_config.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "tables"
+path = "fuzz_targets/tables.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "coefficients"
+path = "fuzz_targets/coefficients.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "row_reader"
+path = "fuzz_targets/row_reader.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "pyramid"
+path = "fuzz_targets/pyramid.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "encode"
+path = "fuzz_targets/encode.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "ledger"
+path = "fuzz_targets/ledger.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "kernels"
+path = "fuzz_targets/kernels.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_idct8"
+path = "fuzz_targets/simd_idct8.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_idct4"
+path = "fuzz_targets/simd_idct4.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_color"
+path = "fuzz_targets/simd_color.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_h2v1"
+path = "fuzz_targets/simd_h2v1.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_h2v2"
+path = "fuzz_targets/simd_h2v2.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_fdct"
+path = "fuzz_targets/simd_fdct.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_rgb2ycc"
+path = "fuzz_targets/simd_rgb2ycc.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_downsample"
+path = "fuzz_targets/simd_downsample.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "simd_huff"
+path = "fuzz_targets/simd_huff.rs"
+test = false
+doc = false
+bench = false

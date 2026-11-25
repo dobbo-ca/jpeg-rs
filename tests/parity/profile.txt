@@ -1,0 +1,4 @@
+enc-rgba420/svs_420_512x512
+dec-gray/svs_420_512x512
+dec-gray/gen_smooth_gray_1536x64
+coef/gen_smooth_gray_1536x64
