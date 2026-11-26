@@ -113,12 +113,33 @@ pub(crate) fn hardware_tier() -> Tier {
 }
 
 /// The tier in use: the hardware's, or `Scalar` under `JPEG_SIMD=scalar`. Resolved once.
+/// `JPEG_SIMD=avx512` requires the AVX-512 kernels (for CI under an emulator): it panics on a CPU
+/// without them, so a test run cannot fall back to AVX2 without a word.
 pub(crate) fn tier() -> Tier {
     static TIER: OnceLock<Tier> = OnceLock::new();
     *TIER.get_or_init(|| match std::env::var("JPEG_SIMD") {
         Ok(v) if v == "scalar" => Tier::Scalar,
+        Ok(v) if v == "avx512" => {
+            assert!(
+                avx512_kernels(),
+                "JPEG_SIMD=avx512, but this CPU lacks AVX-512 F and BW"
+            );
+            hardware_tier()
+        }
         _ => hardware_tier(),
     })
+}
+
+/// Whether the AVX-512 kernels run here: false on a target without them.
+fn avx512_kernels() -> bool {
+    #[cfg(target_arch = "x86_64")]
+    {
+        has_avx512()
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        false
+    }
 }
 
 /// The SIMD tier this process uses: `"avx2"`, `"neon"` or `"scalar"`. The kernels give the same

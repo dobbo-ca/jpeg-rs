@@ -47,8 +47,10 @@ RUN --mount=type=cache,id=jpeg-target,target=/src/target \
 # The NEON module is not compiled for x86_64, so lint the aarch64 target too.
 RUN --mount=type=cache,id=jpeg-target,target=/src/target \
     find src examples tests -name '*.rs' -exec touch {} + && cargo clippy --locked --all-targets --target aarch64-unknown-linux-gnu -- -D warnings
+# The second run prints the tier the tests used ("SIMD tier: ..."), so the log shows what was tested.
 RUN --mount=type=cache,id=jpeg-target,target=/src/target \
-    find src examples tests -name '*.rs' -exec touch {} + && cargo test --locked
+    find src examples tests -name '*.rs' -exec touch {} + && cargo test --locked \
+    && cargo test --locked --lib -- --nocapture tier_is_detected_or_forced avx512_where_expected
 RUN --mount=type=cache,id=jpeg-target,target=/src/target \
     find src examples tests -name '*.rs' -exec touch {} + && JPEG_SIMD=scalar cargo test --locked
 # The x86-64-v4 build (docs/performance.md, the bench's v4 column) must give the same bytes as the
@@ -78,7 +80,8 @@ RUN --mount=type=cache,id=jpeg-fuzz-target,target=/src/tests/fuzz/target \
 FROM src AS arm64
 RUN --mount=type=cache,id=jpeg-target,target=/src/target \
     find src examples tests -type f -exec touch {} + \
-    && cargo test --locked --release --lib --test fancy --test golden --test encode --test coefficients --test region
+    && cargo test --locked --release --lib --test fancy --test golden --test encode --test coefficients --test region \
+    && cargo test --locked --release --lib -- --nocapture tier_is_detected_or_forced
 RUN --mount=type=cache,id=jpeg-target,target=/src/target \
     find src examples tests -name '*.rs' -exec touch {} + && JPEG_SIMD=scalar cargo test --locked --release --lib --test fancy --test golden --test encode --test coefficients --test region
 

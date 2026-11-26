@@ -39,9 +39,18 @@ fn tiers() -> Vec<Tier> {
     vec![t]
 }
 
+/// Also logs the tier in use (`--nocapture`), so a CI log shows what the run tested.
 #[test]
 fn tier_is_detected_or_forced() {
     let t = tiers()[0];
+    eprintln!(
+        "SIMD tier: {}, AVX-512 kernels: {}",
+        simd_tier(),
+        avx512_kernels()
+    );
+    if std::env::var("JPEG_SIMD").as_deref() == Ok("avx512") {
+        assert!(avx512_kernels(), "JPEG_SIMD=avx512, but no AVX-512 kernels");
+    }
     if std::env::var("JPEG_SIMD").as_deref() == Ok("scalar") {
         assert_eq!(tier(), Tier::Scalar);
         assert_eq!(simd_tier(), "scalar");
@@ -718,8 +727,10 @@ fn x86_decode_kernels_match_scalar() {
 fn avx512_where_expected() {
     let have = has_avx512();
     eprintln!("AVX-512 F and BW detected: {have}");
-    if std::env::var("JPEG_EXPECT_AVX512").as_deref() == Ok("1") {
-        assert!(have, "JPEG_EXPECT_AVX512=1, but this CPU has no AVX-512");
+    if std::env::var("JPEG_EXPECT_AVX512").as_deref() == Ok("1")
+        || std::env::var("JPEG_SIMD").as_deref() == Ok("avx512")
+    {
+        assert!(have, "AVX-512 required, but this CPU has no AVX-512");
     }
 }
 
