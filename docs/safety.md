@@ -2,7 +2,7 @@
 
 Hot loops have an AVX2 kernel (x86_64) and a NEON kernel (aarch64) beside the scalar code, which is
 the oracle and the fallback. The tier is detected once (`is_x86_feature_detected!`,
-`is_aarch64_feature_detected!`); `JPEG_SIMD=scalar` forces the scalar one, and `jpeg::simd_tier()`
+`is_aarch64_feature_detected!`); `JPEG_SIMD=scalar` forces the scalar one (`JPEG_SIMD=avx512` panics on a CPU without AVX-512 F and BW, for CI under an emulator), and `jpeg::simd_tier()`
 reports the tier in use. `unsafe` is confined to `src/simd` (`#![deny(unsafe_code)]` elsewhere),
 each `unsafe` block names its invariant, and a kernel only touches memory through bounds-checked
 slices. The threaded decode passes (restart bands of a whole frame or of a region, colour stripes)

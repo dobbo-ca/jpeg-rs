@@ -22,6 +22,9 @@ charged peak, thread peak against `max_threads`, for several of each), and `test
 call at `max_threads` 1, and a small bounded number on a caller's pool; see
 [performance.md](performance.md)). The `ci` stage also runs `tests/golden.rs` and `tests/encode.rs`
 under `-C target-cpu=x86-64-v4`, and only on a runner with AVX-512.
+SIMD tiers in CI: scalar, AVX2 (x86_64) and NEON (aarch64) natively; the AVX-512 kernels (F, BW)
+under Intel SDE (`avx512-sde`: the unit tests on `-spr` with `JPEG_SIMD=avx512`, which fails on a
+CPU without AVX-512), and natively when the hosted runner has AVX-512.
 Go tests with no Rust counterpart here: the zero-alloc and race tests (Go runtime), the limiter
 and cgroup tests, the SIMD kernel tests and `-tags purego`, and the tests that need libjpeg-turbo built
 (`JPEG_GOLDEN_REPRO`, `scripts/golden.sh`).
