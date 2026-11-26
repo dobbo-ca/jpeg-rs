@@ -66,9 +66,12 @@ jobs:
           JPEG_SIMD: avx512
           CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER: ${{ runner.temp }}/sde/sde64 -hsw --
         run: |
-          if cargo test --locked --release --lib -- --nocapture tier_is_detected_or_forced; then
-            echo "JPEG_SIMD=avx512 passed on a CPU without AVX-512"; exit 1
-          fi
+          log="$RUNNER_TEMP/hsw.log"
+          cargo test --locked --release --lib -- --nocapture tier_is_detected_or_forced > "$log" 2>&1 \
+            && { cat "$log"; echo "JPEG_SIMD=avx512 passed on a CPU without AVX-512"; exit 1; }
+          cat "$log"
+          # The failure must be the assert, not some other error.
+          grep -q 'JPEG_SIMD=avx512, but' "$log"
 
   arm64:
     if: github.event_name != 'pull_request'
